@@ -35,6 +35,7 @@ $(".btn").click(function (e) {
    userClickedPattern.push(userChosenColour);
    playSound(userChosenColour);
    animatePress(userChosenColour);
+   checkAnswer(userClickedPattern.length - 1)
 
    console.log("Called by click" + userChosenColour)
 });
@@ -78,17 +79,44 @@ let level = 0;
 let started = false;
 
 $(document).keypress(function (e) { 
-   nextSequence()
-   console.log("Key is Pressed!")
 
+   if (!started) {
+      console.log("Key is Pressed!")
 
-   $("#level-title").text("Level " + level);
+      $("#level-title").text("Level " + level);
+      nextSequence()
+      started = true;
+   }
+
    
-
+   
 });
 
+function checkAnswer(currentLevel) {
+   if (gamePattern[currentLevel] === userClickedPattern[currentLevel]) {
+      console.log("success");
+      if (userClickedPattern[currentLevel] === gamePattern[currentLevel]) {
+         setTimeout(() => {
+            nextSequence()
+         }, 1000);
+      }
+   } else {
+      console.log("wrong")
+      playSound("wrong");
+      $("body").addClass("game-over");
+      setTimeout(() => {
+         $("body").removeClass("game-over");
+      }, 200);
+      startOver()
+      $("level-title").text("Game Over, Press any button to restart this game");
+   }
+}
 
-
+function startOver() {
+   level = 0;
+   gamePattern = [];
+   started = false;
+}
 
 // $(document).keypress(function (e) { 
 //    nextSequence()
